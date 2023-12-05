@@ -1,15 +1,11 @@
 package cn.qingque.viewcoder.openapi.sdk.utils;
 
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import cn.qingque.viewcoder.openapi.sdk.model.Credential;
-import cn.qingque.viewcoder.openapi.sdk.model.Pair;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -17,9 +13,9 @@ import lombok.experimental.UtilityClass;
  * Created on 2023-09-18
  */
 @UtilityClass
-public class SignTools {
+public class SigningTools {
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
-    
+
     public String getCanonicalRequest(String httpMethod,
             String canonicalQueryString,
             String canonicalHeader,
@@ -36,9 +32,9 @@ public class SignTools {
         return stringValue == null ? "" : stringValue;
     }
 
-    public String getAuthorization(Credential credential, String[] canonicalHeaderKeys, String sign) {
-        return String.format("Credential=%s, SignedHeaders=%s, Signature=%s",
-                credential.getTenantId(), String.join(";",canonicalHeaderKeys), sign);
+    public String getAuthorization(Credential credential, String[] canonicalHeaderKeys, String sign, String method) {
+        return String.format("Credential=%s, SignedHeaders=%s, Signature=%s, SignMethod=%s",
+                credential.getKeyId(), String.join(";", canonicalHeaderKeys), sign, method);
     }
 
     public String sha256hexLowerCase(String stringToSign) throws Exception {
@@ -61,30 +57,6 @@ public class SignTools {
         SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey, mac.getAlgorithm());
         mac.init(secretKeySpec);
         return mac.doFinal(stringToSign.getBytes());
-    }
-
-    public String getCanonicalHeadersString(HttpServletRequest request, String authorization) {
-        List<Pair<String, String>> canonicalHeaders = getCanonicalHeaders(request, authorization);
-        StringBuilder canonicalHeadersString = new StringBuilder();
-        for (Pair<String, String> entry : canonicalHeaders) {
-            canonicalHeadersString.append(entry.first).append(":").append(entry.second).append("\n");
-        }
-        return canonicalHeadersString.toString();
-    }
-
-    private List<Pair<String, String>> getCanonicalHeaders(HttpServletRequest request, String authorization) {
-
-        String[] canonicalHeaderKeys = getCanonicalHeaderKeys(authorization);
-
-        List<Pair<String, String>> headers = new ArrayList<>();
-        for (String key : canonicalHeaderKeys) {
-            headers.add(new Pair<>(key, request.getHeader(key)));
-        }
-        return headers;
-    }
-
-    private String[] getCanonicalHeaderKeys(String authorization) {
-        return authorization.split(", ")[1].split("=")[1].split(";");
     }
 
     private String bytesToHex(byte[] bytes) {

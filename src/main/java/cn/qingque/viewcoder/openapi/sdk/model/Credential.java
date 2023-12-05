@@ -8,6 +8,6 @@ import lombok.Data;
  */
 @Data
 public class Credential {
-    private Long tenantId;
+    private String keyId;
     private String secretKey;
 }

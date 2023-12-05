@@ -9,7 +9,7 @@ import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 
 import cn.qingque.viewcoder.openapi.sdk.model.Credential;
-import cn.qingque.viewcoder.openapi.sdk.utils.SignTools;
+import cn.qingque.viewcoder.openapi.sdk.utils.SigningTools;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -21,9 +21,11 @@ import okio.Buffer;
  */
 public class ViewCoderSigner implements Interceptor {
 
-    private final String[] canonicalHeaderKeys = {"content-type", "host"};
+    private final static String[] canonicalHeaderKeys = {"content-type", "host"};
 
     private final Credential credential;
+
+    private final static String signatureMethod = "V1";
 
     public ViewCoderSigner(Credential credential) {
         this.credential = credential;
@@ -41,16 +43,19 @@ public class ViewCoderSigner implements Interceptor {
             String canonicalHeader = getCanonicalHeadersString(request);
             Long timestamp = System.currentTimeMillis();
             byte[] bodyContent = request.body() == null ? new byte[0] : getRequestBody(request);
-            String bodyHash = SignTools.sha256hexLowerCase(bodyContent);
+            String bodyHash = SigningTools.sha256hexLowerCase(bodyContent);
             String canonicalRequest =
-                    SignTools.getCanonicalRequest(method, canonicalQueryString, canonicalHeader, timestamp, bodyHash);
+                    SigningTools.getCanonicalRequest(method, canonicalQueryString, canonicalHeader, timestamp,
+                            bodyHash);
 
-            String signString = SignTools.sha256hexLowerCase(canonicalRequest);
-            String sign = SignTools.sign(signString, credential.getSecretKey().getBytes());
+            String signString = SigningTools.sha256hexLowerCase(canonicalRequest);
 
-            String authorization = SignTools.getAuthorization(credential, canonicalHeaderKeys, sign);
+            String sign = SigningTools.sign(signString, credential.getSecretKey().getBytes());
 
-            builder.addHeader(X_VC_SID, credential.getTenantId().toString());
+            String authorization =
+                    SigningTools.getAuthorization(credential, canonicalHeaderKeys, sign, signatureMethod);
+
+            builder.addHeader(X_VC_SID, credential.getKeyId());
             builder.addHeader(X_VC_TIMESTAMP, timestamp.toString());
             builder.addHeader(AUTHORIZATION, authorization);
         } catch (Exception e) {
