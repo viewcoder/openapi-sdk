@@ -41,18 +41,16 @@ class InterviewClientTest {
 
     @BeforeAll
     public static void setUpBeforeClass() throws Exception {
-        Properties properties = TestUtils.getProperties();
-
         Credential credential = new Credential();
-        credential.setSecretKey(properties.getProperty("secretKey"));
-        credential.setKeyId(properties.getProperty("keyId"));
+        credential.setSecretKey(System.getProperty("secretKey"));
+        credential.setKeyId(System.getProperty("keyId"));
 
 
         interviewClient = new ViewCoderClient(credential).getInterviewClient();
     }
 
     @Test
-    void uploadResume() {
+    void uploadResumeTest() {
         ClassLoader classLoader = getClass().getClassLoader();
         String fileName = "resume.pdf";
         File file = new File(classLoader.getResource(fileName).getFile());

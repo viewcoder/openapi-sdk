@@ -35,12 +35,9 @@ class UserClientTest {
 
     @BeforeAll
     public static void setUpBeforeClass() throws Exception {
-        Properties properties = TestUtils.getProperties();
-
         Credential credential = new Credential();
-        credential.setSecretKey(properties.getProperty("secretKey"));
-        credential.setKeyId(properties.getProperty("keyId"));
-
+        credential.setSecretKey(System.getProperty("secretKey"));
+        credential.setKeyId(System.getProperty("keyId"));
 
         userClient = new ViewCoderClient(credential).getUserClient();
     }

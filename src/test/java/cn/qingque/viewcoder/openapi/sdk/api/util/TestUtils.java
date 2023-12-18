@@ -10,18 +10,6 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class TestUtils {
-    // load properties from src/test/resources/test.properties
-    public Properties getProperties() {
-        Properties properties = new Properties();
-        try {
-            properties.load(TestUtils.class.getClassLoader().getResourceAsStream("test.properties"));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        return properties;
-    }
-
     public String newUserName() {
         return "user_" + System.currentTimeMillis();
     }

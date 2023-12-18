@@ -32,23 +32,21 @@ public class ViewCoderClientTest {
 
     @BeforeAll
     public static void setUpBeforeClass() throws Exception {
-        Properties properties = TestUtils.getProperties();
-
         Credential validCredential = new Credential();
-        validCredential.setSecretKey(properties.getProperty("secretKey"));
-        validCredential.setKeyId(properties.getProperty("keyId"));
+        validCredential.setSecretKey(System.getProperty("secretKey"));
+        validCredential.setKeyId(System.getProperty("keyId"));
 
         Credential invalidCredential = new Credential();
-        invalidCredential.setSecretKey(properties.getProperty("secretKey") + "invalid");
-        invalidCredential.setKeyId(properties.getProperty("keyId"));
+        invalidCredential.setSecretKey(System.getProperty("secretKey") + "invalid");
+        invalidCredential.setKeyId(System.getProperty("keyId"));
 
         Credential invalidSecretIdCredential = new Credential();
         invalidSecretIdCredential.setSecretKey("InvalidSecretKey");
         invalidSecretIdCredential.setKeyId("InvalidTenantId");
 
         Credential secretNotFoundCredential = new Credential();
-        secretNotFoundCredential.setSecretKey(properties.getProperty("secretKey"));
-        secretNotFoundCredential.setKeyId(properties.getProperty("keyId") + "0");
+        secretNotFoundCredential.setSecretKey(System.getProperty("secretKey"));
+        secretNotFoundCredential.setKeyId(System.getProperty("keyId") + "0");
 
 
         validInterviewClient = new ViewCoderClient(validCredential).getInterviewClient();
@@ -73,7 +71,7 @@ public class ViewCoderClientTest {
     }
 
     @Test
-    void secretNotFound() {
+    void secretNotFoundTest() {
         Result<Page<InterviewQueryResult>> result =
                 secretNotFoundInterviewClient.getInterviewList(new InterviewQueryParam());
         assertFalse(result.isSuccess());
