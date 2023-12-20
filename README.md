@@ -19,3 +19,11 @@ InterviewClient interviewClient = new ViewCoderClient(credential).getInterviewCl
 Result<Page<InterviewQueryResult>> result = interviewClient.getInterviewList(new InterviewQueryParam());
 ```
 
+## Maven
+```xml
+<dependency>
+    <groupId>cn.qingque.viewcoder</groupId>
+    <artifactId>openapi-sdk</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
