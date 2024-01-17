@@ -22,7 +22,6 @@ import okhttp3.OkHttpClient.Builder;
  */
 public class ViewCoderClient {
     private static final String ENDPOINT = "https://viewcoder.qingque.cn/backend/openapi";
-
     private final OkHttpClient httpClient;
     private final Encoder encoder;
     private final Decoder decoder;
@@ -38,6 +37,14 @@ public class ViewCoderClient {
 
         encoder = new JacksonEncoder(objectMapper);
         decoder = new JacksonDecoder(objectMapper);
+    }
+
+    public InterviewClient getInterviewDevClient(String devEndPoint) {
+        return Feign.builder()
+                .client(httpClient)
+                .encoder(new FormEncoder(encoder))
+                .decoder(decoder)
+                .target(InterviewClient.class, devEndPoint);
     }
 
     public InterviewClient getInterviewClient() {
