@@ -24,6 +24,6 @@ Result<Page<InterviewQueryResult>> result = interviewClient.getInterviewList(new
 <dependency>
     <groupId>cn.qingque.viewcoder</groupId>
     <artifactId>openapi-sdk</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.3</version>
 </dependency>
 ```
