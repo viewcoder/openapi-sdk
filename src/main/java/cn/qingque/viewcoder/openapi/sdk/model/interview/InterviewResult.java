@@ -15,5 +15,6 @@ public class InterviewResult {
     private List<InterviewScorecardResult> score;
     private String overview;
     private String submitter;
+    private List<String> videoUrls;
 
 }
