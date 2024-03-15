@@ -77,4 +77,7 @@ public interface InterviewClient {
     @RequestLine("GET /interview/template?interviewId={interviewId}")
     @Headers({"Content-Type: application/json"})
     Result<List<InterviewTemplate>> getInterviewTemplate(@Param("interviewId") Long interviewId);
+    @RequestLine("GET /interview/record/temporary/url?interviewId={interviewId}")
+    @Headers({"Content-Type: application/json"})
+    Result<String> getRecordTemporaryUrl(@Param("interviewId") Long interviewId);
 }
