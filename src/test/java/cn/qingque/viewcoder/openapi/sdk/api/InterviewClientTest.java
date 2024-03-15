@@ -136,6 +136,14 @@ class InterviewClientTest {
         assertNotNull(result.getResult());
     }
 
+    @Test
+    void getRecordTemporaryUrl() {
+        InterviewQueryResult interview = firstInterviewFromList();
+        Result<String> result = interviewClient.getRecordTemporaryUrl(interview.getInterviewId());
+        assertTrue(result.isSuccess(), result.getMessage());
+        assertNotNull(result.getResult());
+    }
+
     private InterviewQueryResult firstInterviewFromList() {
         Result<Page<InterviewQueryResult>> listResult = interviewClient.getInterviewList(new InterviewQueryParam());
         List<InterviewQueryResult> records = listResult.getResult().getRecords();
