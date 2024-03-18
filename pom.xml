@@ -28,7 +28,7 @@
         <java.version>8</java.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <revision>1.0.3</revision>
+        <revision>1.0.4</revision>
     </properties>
     <dependencies>
         <dependency>
