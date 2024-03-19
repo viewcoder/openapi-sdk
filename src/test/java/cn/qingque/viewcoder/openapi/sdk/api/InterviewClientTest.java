@@ -148,6 +148,14 @@ class InterviewClientTest {
         assertNotNull(result.getResult());
     }
 
+    @Test
+    void cancel() {
+        InterviewQueryResult interview = firstInterviewFromList();
+        Result<Boolean> result = interviewClient.cancel(interview.getInterviewId());
+        assertTrue(result.isSuccess(), result.getMessage());
+        assertNotNull(result.getResult());
+    }
+
     private InterviewQueryResult firstInterviewFromList() {
         Result<Page<InterviewQueryResult>> listResult = interviewClient.getInterviewList(new InterviewQueryParam());
         List<InterviewQueryResult> records = listResult.getResult().getRecords();

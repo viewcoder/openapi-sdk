@@ -78,6 +78,13 @@ public interface InterviewClient {
     @Headers({"Content-Type: application/json"})
     Result<List<InterviewTemplate>> getInterviewTemplate(@Param("interviewId") Long interviewId);
 
+    /**
+     * 面试取消
+     */
+    @RequestLine("POST /interview/cancel?interviewId={interviewId}")
+    @Headers({"Content-Type: application/json"})
+    Result<Boolean> cancel(@Param("interviewId") Long interviewId);
+
     /*
      * 获取记录页临时链接
      * */
