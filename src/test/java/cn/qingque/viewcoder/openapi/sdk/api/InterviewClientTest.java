@@ -6,9 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import cn.qingque.viewcoder.openapi.sdk.ViewCoderClient;
@@ -25,6 +27,7 @@ import cn.qingque.viewcoder.openapi.sdk.model.interview.InterviewQueryResult;
 import cn.qingque.viewcoder.openapi.sdk.model.interview.InterviewResult;
 import cn.qingque.viewcoder.openapi.sdk.model.interview.InterviewResultParam;
 import cn.qingque.viewcoder.openapi.sdk.model.interview.InterviewScorecardReqDTO;
+import cn.qingque.viewcoder.openapi.sdk.model.interview.InterviewStatusEnum;
 import cn.qingque.viewcoder.openapi.sdk.model.interview.InterviewTemplate;
 import cn.qingque.viewcoder.openapi.sdk.model.interview.InterviewUpdateParam;
 import cn.qingque.viewcoder.openapi.sdk.model.interview.InterviewUpdateResult;
@@ -49,19 +52,21 @@ class InterviewClientTest {
     }
 
     @Test
+    @Order(1)
     void uploadResumeTest() {
-        ClassLoader classLoader = getClass().getClassLoader();
-        String fileName = "resume.pdf";
-        File file = new File(classLoader.getResource(fileName).getFile());
-
-        Result<UploadResumeResult> result = interviewClient.uploadResume(file);
+        Result<UploadResumeResult> result = uploadResumeFile();
         assertTrue(result.isSuccess(), result.getMessage());
         assertNotNull(result.getResult().getResumeId());
     }
 
     @Test
+    @Order(2)
     void createInterview() {
-        InterviewCreateParam param = buildInterviewCreateParam();
+        Result<UploadResumeResult> uploadResumeResult = uploadResumeFile();
+        assertTrue(uploadResumeResult.isSuccess(), uploadResumeResult.getMessage());
+
+        String resumeId = uploadResumeResult.getResult().getResumeId();
+        InterviewCreateParam param = buildInterviewCreateParam(resumeId);
         Result<InterviewCreateResult> result = interviewClient.createInterview(param);
         assertTrue(result.isSuccess(), result.getMessage());
         assertNotNull(result.getResult());
@@ -137,7 +142,7 @@ class InterviewClientTest {
 
     @Test
     void getRecordTemporaryUrl() {
-        InterviewQueryResult interview = firstInterviewFromList();
+        InterviewQueryResult interview = firstClosedInterviewFromList();
         Result<String> result = interviewClient.getRecordTemporaryUrl(interview.getInterviewId());
         assertTrue(result.isSuccess(), result.getMessage());
         assertNotNull(result.getResult());
@@ -149,7 +154,15 @@ class InterviewClientTest {
         return records.get(0);
     }
 
-    private InterviewCreateParam buildInterviewCreateParam() {
+    private InterviewQueryResult firstClosedInterviewFromList() {
+        InterviewQueryParam param = new InterviewQueryParam();
+        param.setStatus(Collections.singletonList(InterviewStatusEnum.CLOSED));
+        Result<Page<InterviewQueryResult>> listResult = interviewClient.getInterviewList(param);
+        List<InterviewQueryResult> records = listResult.getResult().getRecords();
+        return records.get(0);
+    }
+
+    private InterviewCreateParam buildInterviewCreateParam(String resumeId) {
         InterviewCreateParam param = new InterviewCreateParam();
         List<String> interviewers = new ArrayList<>();
         interviewers.add(TestUtils.newUserMail());
@@ -159,7 +172,7 @@ class InterviewClientTest {
         param.setCandidateMail(TestUtils.newUserMail());
         param.setInterviewers(interviewers);
         param.setRound(1);
-        param.setResumeId("428933504190763057");
+        param.setResumeId(resumeId);
         param.setScheduleTime(System.currentTimeMillis() + 1000 * 60 * 60 * 24);
         param.setRelatedGroup(1L);
         param.setPosition("Position");
@@ -167,7 +180,7 @@ class InterviewClientTest {
         return param;
     }
 
-    public InterviewUpdateParam buildUpdateParam(Long interviewId) {
+    private  InterviewUpdateParam buildUpdateParam(Long interviewId) {
         InterviewUpdateParam updateParam = new InterviewUpdateParam();
 
         List<String> interviewers = new ArrayList<>();
@@ -185,7 +198,7 @@ class InterviewClientTest {
     }
 
 
-    public InterviewResultParam buildResultParam(Long interviewId) {
+    private InterviewResultParam buildResultParam(Long interviewId) {
         InterviewResultParam param = new InterviewResultParam();
         param.setInterviewId(interviewId);
         param.setDecision(ScoreCardDecisionEnum.PENDING);
@@ -200,4 +213,11 @@ class InterviewClientTest {
         return param;
     }
 
+    private Result<UploadResumeResult> uploadResumeFile() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        String fileName = "resume.pdf";
+        File file = new File(classLoader.getResource(fileName).getFile());
+
+        return interviewClient.uploadResume(file);
+    }
 }
