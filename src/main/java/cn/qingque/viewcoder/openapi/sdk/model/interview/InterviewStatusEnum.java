@@ -8,6 +8,7 @@ public enum InterviewStatusEnum {
     RUNNING(0, "已开始"),
     NOT_STARTED(1, "未开始"),
     CLOSED(2, "已结束"),
+    CANCELED(3, "已取消"),
     ;
     private int code;
     private String desc;
