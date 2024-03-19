@@ -42,4 +42,6 @@ public class InterviewDetailInfo {
     private String position;
 
     private String jobDetail;
+
+    private String thirdBizId;
 }
