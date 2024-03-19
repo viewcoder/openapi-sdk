@@ -114,6 +114,7 @@ class InterviewClientTest {
                 interview.getInterviewId());
         assertTrue(result.isSuccess(), result.getMessage());
         assertEquals(result.getResult().getInterviewId(), interview.getInterviewId());
+        assertNotNull(result.getResult().getThirdBizId());
     }
 
     @Test
