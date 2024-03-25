@@ -2,6 +2,8 @@ package cn.qingque.viewcoder.openapi.sdk.model.interview;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import cn.qingque.viewcoder.openapi.sdk.model.CategoryAndScore;
 import lombok.Data;
 
@@ -10,6 +12,7 @@ import lombok.Data;
  * Created on 2023-12-04
  */
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class InterviewDetailInfo {
     private Long interviewId;
 
