@@ -1,6 +1,6 @@
 # ViewCoder OpenApi Sdk
 
-OpenApi 文档：https://www.mojidoc.com/0fahe-aniz5bvfuzhrvcorcc64t6qftm-00b
+OpenApi 文档：https://viewcoder.qingque.cn/docs/apiDesc.md
 
 ## How to use
 

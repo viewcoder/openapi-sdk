@@ -16,5 +16,5 @@ public class InterviewResult {
     private String overview;
     private String submitter;
     private List<String> videoUrls;
-
+    private List<InterviewMediaOpenVO> medias;
 }
